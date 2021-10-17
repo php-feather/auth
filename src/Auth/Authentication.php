@@ -17,6 +17,15 @@ class Authentication
 
     /**
      *
+     * @param \Feather\Auth\Authenticator $authenticator
+     */
+    public function __construct(Authenticator $authenticator)
+    {
+        $this->authenticator = $authenticator;
+    }
+
+    /**
+     *
      * @param array $attributes
      * @return bool
      */
