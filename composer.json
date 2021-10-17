@@ -1,6 +1,6 @@
 {
     "name": "php-feather/auth",
-    "description": "Feather Auth - Library. Authentication library for feather framework",
+    "description": "Feather Auth - Library. Feather framework authentication library",
     "license": "MIT",
 
     "authors": [

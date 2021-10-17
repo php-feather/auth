@@ -15,18 +15,6 @@ class Authentication
     /** @var \Feather\Auth\Authenticator * */
     protected $authenticator;
 
-    /** @var \Feather\Auth\Auth * */
-    protected static $self;
-
-    public function __construct()
-    {
-        if (static::$self == null) {
-            static::$self = new Authentication();
-        }
-
-        return static::$self;
-    }
-
     /**
      *
      * @param array $attributes
