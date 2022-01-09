@@ -14,7 +14,8 @@
     "require": {
         "php": ">=7.2",
         "php-feather/support": "dev-main",
-        "php-feather/session": "dev-master"
+        "php-feather/session": "dev-master",
+        "php-feather/security": "dev-master"
     },
     "autoload": {
         "psr-4": {

@@ -4,6 +4,7 @@ namespace Feather\Auth;
 
 use Feather\Support\Database\IConnection;
 use PDO;
+use Feather\Security\Hash;
 
 /**
  * Description of DbAuthenticator
@@ -17,6 +18,9 @@ class DbAuthenticator extends Authenticator
     protected $identityField = 'id';
 
     /** @var string * */
+    protected $passwordField = 'password';
+
+    /** @var string * */
     protected $dbTable = 'users';
 
     /** @var \Feather\Auth\IAuthUser * */
@@ -27,6 +31,14 @@ class DbAuthenticator extends Authenticator
 
     /** @var \Feather\Auth\Guard\IAuthGuard * */
     protected $guard;
+
+    /**
+     * @var array|string
+     * Callable (function/Object,method) names that accepts 2 arguments and returns a boolean:
+     * 1. hashed password as the first argument
+     * 2. plain text password as the second argument
+     * */
+    protected $hashFunc;
 
     /**
      * Get error code
@@ -44,6 +56,10 @@ class DbAuthenticator extends Authenticator
     public function getErrorMessage(): string
     {
         switch ($this->errorCode) {
+            case 1:
+                return 'User not found';
+            case 2:
+                return 'Incorrect password';
             default:
                 return '';
         }
@@ -60,12 +76,25 @@ class DbAuthenticator extends Authenticator
             return false;
         }
 
+        $checkPassword = false;
+
+        if (isset($attributes[$this->passwordField])) {
+            $password      = $attributes[$this->passwordField];
+            unset($attributes[$this->passwordField]);
+            $checkPassword = true;
+        }
+
         $user = $this->getUser($attributes);
 
         if (!$user) {
+            $this->errorCode = 1;
             return false;
         }
 
+        if ($checkPassword && !$this->verifyPassword($user, $password)) {
+            $this->errorCode = 2;
+            return false;
+        }
         $this->user = new AuthUser($user);
 
         $this->guard->setIdentifier($this->user->{$this->identityField});
@@ -140,6 +169,31 @@ class DbAuthenticator extends Authenticator
 
     /**
      *
+     * @param string|array $hashMethod
+     * Callable (function/Object,method) name that accepts 2 arguments and returns a boolean:
+     * 1. hashed password as the first argument
+     * 2. plain text password as the second argument
+     * @return $this
+     */
+    public function setHashMethod($hashMethod)
+    {
+        $this->hashFunc = $hashMethod;
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $passwordField
+     * @return $this
+     */
+    public function setPasswordField(string $passwordField)
+    {
+        $this->passwordField = $passwordField;
+        return $this;
+    }
+
+    /**
+     *
      * @param string $table
      * @return $this
      */
@@ -171,11 +225,11 @@ class DbAuthenticator extends Authenticator
      */
     protected function getUser(array $attributes)
     {
-        $sql = "select * from {$this->dbTable} where ";
+        $sql   = "select * from {$this->dbTable} where ";
         $where = [];
 
         foreach ($attributes as $key => $val) {
-            $where[] = ["$key = :$key"];
+            $where[] = "$key = :$key";
         }
 
         $sql .= implode(' and ', $where) . ' limit 1';
@@ -189,6 +243,21 @@ class DbAuthenticator extends Authenticator
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     *
+     * @param \Feather\Auth\IAuthUser $user
+     * @param string $password
+     * @return bool
+     */
+    protected function verifyPassword(IAuthUser $user, string $password)
+    {
+        if (!$this->hashFunc) {
+            return $user->{$this->passwordField} === $password;
+        }
+
+        return call_user_func_array($this->hashFunc, [$user->{$this->passwordField}, $password]);
     }
 
 }
