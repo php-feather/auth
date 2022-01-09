@@ -40,7 +40,7 @@ class TokenGuard implements IAuthGuard
      *
      * @return string|null
      */
-    public function getIdentifier()
+    public function getIdentifier(): \mixed
     {
         $token = $this->getToken();
 

@@ -21,7 +21,7 @@ class SessionGuard implements IAuthGuard
         Session::remove(static::KEY_PREFIX . $this->identifier);
     }
 
-    public function getIdentifier()
+    public function getIdentifier(): \mixed
     {
         return Session::get(static::KEY_PREFIX . $this->identifier);
     }

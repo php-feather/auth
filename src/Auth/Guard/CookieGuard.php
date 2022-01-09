@@ -43,12 +43,12 @@ class CookieGuard implements IAuthGuard
         $this->requestBag->cookie(null, null)->remove(static::COOKIE_NAME);
     }
 
-    public function getIdentifier()
+    public function getIdentifier(): \mixed
     {
         $identifier = $this->requestBag->cookie(static::COOKIE_NAME, null);
 
         if ($this->encrypter && $identifier) {
-            $decrypted = $this->encrypter->decrypt($identifier);
+            $decrypted  = $this->encrypter->decrypt($identifier);
             $identifier = $decrypted ? $decrypted : $identifier;
         }
 
@@ -122,10 +122,10 @@ class CookieGuard implements IAuthGuard
         }
 
         $options = [
-            'expires' => $this->expire,
-            'path' => '/',
-            'domain' => $this->domain,
-            'secure' => $this->secure,
+            'expires'  => $this->expire,
+            'path'     => '/',
+            'domain'   => $this->domain,
+            'secure'   => $this->secure,
             'httponly' => $this->httpOnly,
             'samesite' => $this->sameSite
         ];

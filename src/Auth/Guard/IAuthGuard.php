@@ -13,7 +13,7 @@ interface IAuthGuard
      * Get identifier value
      * @return mixed
      */
-    public function getIdentifier(): mixed;
+    public function getIdentifier(): \mixed;
 
     /**
      * Set identifier value
