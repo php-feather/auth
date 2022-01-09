@@ -121,7 +121,7 @@ class DbAuthenticator extends Authenticator
      * @param IConnection $connection
      * @return $this
      */
-    public function setDatabaseConnection(\Feather\Support\Database\IConnection $connection)
+    public function setConnection(\Feather\Support\Database\IConnection $connection)
     {
         $this->connection = $connection;
         return $this;

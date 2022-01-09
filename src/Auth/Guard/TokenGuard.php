@@ -4,6 +4,7 @@ namespace Feather\Auth\Guard;
 
 use Feather\Support\Util\Token;
 use Feather\Support\Contracts\IRequestParamBag as RequestBag;
+use Feather\Support\Contracts\IEncrypter;
 
 /**
  * Description of TokenGuard
@@ -13,7 +14,7 @@ use Feather\Support\Contracts\IRequestParamBag as RequestBag;
 class TokenGuard implements IAuthGuard
 {
 
-    const TOKEN_NAME = 'x-auth-token';
+    const TOKEN_NAME          = 'x-auth-token';
     const TOKEN_REQUEST_PARAM = 'auth-token';
 
     /**
@@ -24,6 +25,9 @@ class TokenGuard implements IAuthGuard
 
     /** @var Feather\Support\Contracts\IRequestParamBag * */
     protected $requestBag;
+
+    /** @var \Feather\Support\Contracts\IEncrypter * */
+    protected $encrypter;
 
     public function forget(): void
     {
@@ -39,7 +43,16 @@ class TokenGuard implements IAuthGuard
     public function getIdentifier()
     {
         $token = $this->getToken();
-        return $token ? $token->getValue() : null;
+
+        if ($token instanceof Token) {
+            $identity = $token->getValue();
+            if ($this->encrypter) {
+                $identity = $this->encrypter->decrypt($identity);
+            }
+            return $identity;
+        }
+
+        return null;
     }
 
     /**
@@ -49,6 +62,10 @@ class TokenGuard implements IAuthGuard
      */
     public function setIdentifier($identity): void
     {
+        if ($this->encrypter) {
+            $identity = $this->encrypter->encrypt($identity);
+        }
+
         $token = new Token(static::TOKEN_NAME, $identity, $this->expire);
 
         $tokenStr = base64_encode(serialize($token));
@@ -56,6 +73,17 @@ class TokenGuard implements IAuthGuard
         header(static::TOKEN_NAME . ': ' . $tokenStr);
 
         $this->requestBag->addItems([static::TOKEN_REQUEST_PARAM => $tokenStr], true);
+    }
+
+    /**
+     *
+     * @param \Feather\Support\Contracts\IEncrypter $encrypter
+     * @return $this
+     */
+    public function setEncrypter(IEncrypter $encrypter)
+    {
+        $this->encrypter = $encrypter;
+        return $this;
     }
 
     /**
