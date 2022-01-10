@@ -34,7 +34,7 @@ class DbAuthenticator extends Authenticator
 
     /**
      * @var array|string
-     * Callable (function/Object,method) names that accepts 2 arguments and returns a boolean:
+     * Callable (function/Object,method) names that accepts 2 arguments and returns a bool:
      * 1. hashed password as the first argument
      * 2. plain text password as the second argument
      * */
@@ -68,9 +68,9 @@ class DbAuthenticator extends Authenticator
     /**
      *
      * @param array $attributes
-     * @return boolean
+     * @return bool
      */
-    public function login(array $attributes): boolean
+    public function login(array $attributes): bool
     {
         if (empty($attributes)) {
             return false;
@@ -105,9 +105,9 @@ class DbAuthenticator extends Authenticator
     /**
      *
      * @param \Feather\Auth\IAuthUser $user
-     * @return boolean
+     * @return bool
      */
-    public function loginUser(IAuthUser $user): boolean
+    public function loginUser(IAuthUser $user): bool
     {
         $identifier = $user->{$this->identityField};
         return $this->login([$this->identityField => $identifier]);
@@ -116,18 +116,18 @@ class DbAuthenticator extends Authenticator
     /**
      *
      * @param string|int $id
-     * @return boolean
+     * @return bool
      */
-    public function loginWithId($id): boolean
+    public function loginWithId($id): bool
     {
         return $this->login([$this->identityField => $id]);
     }
 
     /**
      *
-     * @return boolean
+     * @return bool
      */
-    public function logout(): boolean
+    public function logout(): bool
     {
         $this->user = null;
         $this->guard->forget();
@@ -170,7 +170,7 @@ class DbAuthenticator extends Authenticator
     /**
      *
      * @param string|array $hashMethod
-     * Callable (function/Object,method) name that accepts 2 arguments and returns a boolean:
+     * Callable (function/Object,method) name that accepts 2 arguments and returns a bool:
      * 1. hashed password as the first argument
      * 2. plain text password as the second argument
      * @return $this

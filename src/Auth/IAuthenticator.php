@@ -18,29 +18,29 @@ interface IAuthenticator
     /**
      * Authenticate user using attributes
      * @param array $attributes
-     * @return boolean
+     * @return bool
      */
-    public function login(array $attributes): boolean;
+    public function login(array $attributes): bool;
 
     /**
      * Authenticate user using AuthUser object
      * @param \Feather\Auth\IAuthUser $user
-     * @return boolean
+     * @return bool
      */
-    public function loginUser(IAuthUser $user): boolean;
+    public function loginUser(IAuthUser $user): bool;
 
     /**
      * Authenticate user using identifier
      * @param string|int $id
-     * @return boolean
+     * @return bool
      */
-    public function loginWithId($id): boolean;
+    public function loginWithId($id): bool;
 
     /**
      * Logout authenticated user
-     * @return boolean
+     * @return bool
      */
-    public function logout(): boolean;
+    public function logout(): bool;
 
     /**
      * Get Authenticated User
