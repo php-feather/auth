@@ -19,6 +19,13 @@ class Auth
     /** @var Feather\Auth\IAuthenticator * */
     protected static $authenticator;
 
+    public static function __callStatic($name, $arguments)
+    {
+        if (method_exists(static::$authenticator, $name)) {
+            return call_user_func_array([static::$authenticator, $name], $arguments);
+        }
+    }
+
     public static function boot(Authenticator $authenticator)
     {
         if (!static::$authenticator instanceof Authenticator) {
@@ -39,6 +46,15 @@ class Auth
         }
 
         return static::$authenticator->login($attributes);
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public static function getErrorCode()
+    {
+        return static::$authenticator->getErrorCode();
     }
 
     /**
