@@ -12,13 +12,13 @@ use Feather\Session\Session;
 class SessionGuard implements IAuthGuard
 {
 
-    protected $identifier = 'id';
+    protected $identity = 'id';
 
-    const KEY_PREFIX = 'AUTH_';
+    const SESS_NAME = 'AUTH_USER';
 
     public function forget(): void
     {
-        Session::remove(static::KEY_PREFIX . $this->identifier);
+        Session::remove(static::SESS_NAME . $this->identifier);
     }
 
     /**
@@ -27,7 +27,7 @@ class SessionGuard implements IAuthGuard
      */
     public function getIdentifier()
     {
-        return Session::get(static::KEY_PREFIX . $this->identifier);
+        return Session::get(static::SESS_NAME);
     }
 
     /**
@@ -36,7 +36,18 @@ class SessionGuard implements IAuthGuard
      */
     public function setIdentifier($identifier): void
     {
-        Session::set(static::KEY_PREFIX . $this->identifier, $identifier);
+        Session::set(static::SESS_NAME, $identifier);
+    }
+
+    /**
+     *
+     * @param string $identity
+     * @return $this
+     */
+    public function setIdentity(string $identity)
+    {
+        $this->identity = $identity;
+        return $this;
     }
 
 }

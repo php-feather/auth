@@ -210,9 +210,13 @@ class DbAuthenticator extends Authenticator
      */
     public function user()
     {
+        if ($this->user instanceof IAuthUser) {
+            return $this->user;
+        }
+
         $identifier = $this->guard->getIdentifier();
 
-        if ($identifier && $user = $this->getUser([$this->identityField => $identifier])) {
+        if ($identifier && ($user = $this->getUser([$this->identityField => $identifier]))) {
             $this->user = new AuthUser($user);
         }
 
