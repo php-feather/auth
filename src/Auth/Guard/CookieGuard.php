@@ -17,7 +17,7 @@ class CookieGuard implements IAuthGuard
     const COOKIE_NAME = 'auth_user';
 
     /** @var bool * */
-    protected bool $secure = false;
+    protected $secure = false;
 
     /** @var bool * */
     protected $httpOnly = true;
@@ -43,7 +43,11 @@ class CookieGuard implements IAuthGuard
         $this->requestBag->cookie(null, null)->remove(static::COOKIE_NAME);
     }
 
-    public function getIdentifier(): \mixed
+    /**
+     *
+     * @return mixed
+     */
+    public function getIdentifier()
     {
         $identifier = $this->requestBag->cookie(static::COOKIE_NAME, null);
 
