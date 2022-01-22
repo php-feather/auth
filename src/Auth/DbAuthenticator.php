@@ -206,9 +206,9 @@ class DbAuthenticator extends Authenticator
 
     /**
      * Get Authenticated user
-     * @return \Feather\Auth\IAuthUser
+     * @return \Feather\Auth\IAuthUser|null
      */
-    public function user(): \Feather\Auth\IAuthUser
+    public function user()
     {
         $identifier = $this->guard->getIdentifier();
 

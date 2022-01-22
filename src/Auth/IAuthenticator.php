@@ -44,7 +44,7 @@ interface IAuthenticator
 
     /**
      * Get Authenticated User
-     * @return \Feather\Auth\IAuthUser
+     * @return \Feather\Auth\IAuthUser|null
      */
-    public function user(): IAuthUser;
+    public function user();
 }
