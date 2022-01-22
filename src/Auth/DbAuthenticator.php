@@ -91,11 +91,12 @@ class DbAuthenticator extends Authenticator
             return false;
         }
 
-        if ($checkPassword && !$this->verifyPassword($user, $password)) {
+        $this->user = new AuthUser($user);
+
+        if ($checkPassword && !$this->verifyPassword($this->user, $password)) {
             $this->errorCode = 2;
             return false;
         }
-        $this->user = new AuthUser($user);
 
         $this->guard->setIdentifier($this->user->{$this->identityField});
 
