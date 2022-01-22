@@ -255,7 +255,7 @@ class DbAuthenticator extends Authenticator
     protected function verifyPassword(IAuthUser $user, string $password)
     {
         if (!$this->hashFunc) {
-            return $user->{$this->passwordField} === $password;
+            return Hash::compare($user->{$this->passwordField}, $password);
         }
 
         return call_user_func_array($this->hashFunc, [$user->{$this->passwordField}, $password]);
