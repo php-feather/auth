@@ -21,13 +21,18 @@ class TokenGuard implements IAuthGuard
      * Number of minutes to expire after
      * @var int
      */
-    protected $expire;
+    protected $expire = 0;
 
     /** @var Feather\Support\Contracts\IRequestParamBag * */
     protected $requestBag;
 
     /** @var \Feather\Support\Contracts\IEncrypter * */
     protected $encrypter;
+
+    public function __construct()
+    {
+        $this->expire = intval(ini_get('session.cookie_lifetime') / 60);
+    }
 
     public function forget(): void
     {
@@ -76,6 +81,17 @@ class TokenGuard implements IAuthGuard
     }
 
     /**
+     * Set Token Expiration in minutes
+     * @param int $expire
+     * @return $this
+     */
+    public function setExpire($expire)
+    {
+        $this->expire = $expire;
+        return $this;
+    }
+
+    /**
      *
      * @param \Feather\Support\Contracts\IEncrypter $encrypter
      * @return $this
@@ -91,7 +107,7 @@ class TokenGuard implements IAuthGuard
      * @param RequestBag $bag
      * @return $this
      */
-    public static function setRequestBag(RequestBag $bag)
+    public function setRequestBag(RequestBag $bag)
     {
         $this->requestBag = $bag;
         return $this;
