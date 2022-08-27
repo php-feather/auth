@@ -35,12 +35,12 @@ class CookieGuard implements IAuthGuard
     protected $encrypter;
 
     /** @var Feather\Support\Contracts\IRequestParamBag * */
-    protected $requestBag;
+    protected $cookieBag;
 
     public function forget(): void
     {
         setcookie(static::COOKIE_NAME, '', -1000, '/', $this->domain, $this->secure, $this->httpOnly);
-        $this->requestBag->cookie(null, null)->remove(static::COOKIE_NAME);
+        $this->cookieBag->cookie(null, null)->remove(static::COOKIE_NAME);
     }
 
     /**
@@ -49,7 +49,7 @@ class CookieGuard implements IAuthGuard
      */
     public function getIdentifier()
     {
-        $identifier = $this->requestBag->cookie(static::COOKIE_NAME, null);
+        $identifier = $this->cookieBag->cookie(static::COOKIE_NAME, null);
 
         if ($this->encrypter && $identifier) {
             $decrypted  = $this->encrypter->decrypt($identifier);
@@ -66,7 +66,7 @@ class CookieGuard implements IAuthGuard
      */
     public function setCookieBag(RequestBag $requestBag)
     {
-        $this->requestBag = $requestBag;
+        $this->cookieBag = $requestBag;
         return $this;
     }
 
@@ -89,6 +89,17 @@ class CookieGuard implements IAuthGuard
     public function setDomain(?string $domain)
     {
         $this->domain = $domain;
+        return $this;
+    }
+
+    /**
+     *
+     * @param \Feather\Support\Contracts\IEncrypter $encrypter
+     * @return $this
+     */
+    public function setEncrypter(IEncrypter $encrypter)
+    {
+        $this->encrypter = $encrypter;
         return $this;
     }
 
