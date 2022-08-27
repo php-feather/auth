@@ -30,6 +30,8 @@ class Auth
     {
         if (!static::$authenticator instanceof Authenticator) {
             static::$authenticator = $authenticator;
+        } else {
+            static::$authenticator = new NullAuthenticator();
         }
     }
 
