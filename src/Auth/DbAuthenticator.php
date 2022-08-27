@@ -234,7 +234,7 @@ class DbAuthenticator extends Authenticator
         $where = [];
 
         foreach ($attributes as $key => $val) {
-            $where[] = "$key = :$key";
+            $where[] = "`$key` = :$key";
         }
 
         $sql .= implode(' and ', $where) . ' limit 1';
